@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>组织结构图new</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+        .zu_map{
+            width:1206px;
+            height:500px;
+            border:1px solid #000;
+        }
+        .graph{
+            width:100%;
+            height:50px;
+            overflow: hidden;
+        }
+        .graph p{
+            text-align: center;
+            width:200px;
+            float:left;
+            height:50px;
+            line-height:50px;
+            background-color: #468e33;
+            border-right:1px solid #fff;
+            color: #fff;
+        }
+        #container_0 div,#container_1 div,#container_2 div,#container_3 div,#container_4 div,#container_5 div{
+            border:1px solid #E0E0E0;
+            border-radius:5px;
+            width:150px;
+            height:30px;
+            line-height:30px;
+            margin:20px  0;
+            text-align: center;
+            cursor:pointer;
+        }
+        .cont{
+            float:left;
+            width:150px;
+            height:450px;
+            padding:0 25px;
+        }
+        .map{
+            position: relative;
+        }
+        .container_node{
+            position:absolute;
+            left:0;
+            top:0;
+            width:100%;
+            height:100%;
+        }
+        .background_new{
+            position:absolute;
+            left:0;
+            top:0;
+            width:100%;
+            height:100%;
+        }
+        .background_new div{
+            float:left;
+            width:200px;
+            height:450px;
+        }
+        .background{
+            background: #ededed;
+        }
+        .myCanvas{
+            position:absolute;
+            left:0;
+            top:-50px;
+        }
+
+        .back_1{
+            background: #0064ca;
+            color: #fff;
+        }
+        .back_2{
+            background: #b200cc;
+            color: #fff;
+        }
+        .back_3{
+            background: #00a900;
+            color: #fff;
+        }
+        .back_4{
+            background: #ff6c00;
+            color: #fff;
+        }
+        .back_5{
+            background: #00909d;
+            color: #fff;
+        }
+        .back_6{
+            background: #ff0000;
+            color: #fff;
+        }
+    </style>
+    <script type="text/javascript" src="jquery.min.js"></script>
+</head>
+<body>
+<div class="zu_map">
+    <div class="graph">
+        <p>资源包</p>
+        <p>节目</p>
+        <p>日安排</p>
+        <p>播放计划</p>
+        <p>分屏</p>
+        <p>终端组</p>
+    </div>
+    <div class="map">
+        <div class="background_new">
+            <div  class="background"></div>
+            <div  class=""></div>
+            <div  class="background"></div>
+            <div  class=""></div>
+            <div  class="background"></div>
+            <div  class=""></div>
+        </div>
+        <canvas class="myCanvas" id="myCanvas" width="1200px" height="500px"></canvas>
+        <div class="container_node">
+            <div id = "container_0" class="cont"></div>
+            <div id = "container_1" class="cont"></div>
+            <div id = "container_2" class="cont"></div>
+            <div id = "container_3" class="cont"></div>
+            <div id = "container_4" class="cont"></div>
+            <div id = "container_5" class="cont"></div>
+        </div>
+
+    </div>
+</div>
+</body>
+<script language="javascript">
+    $(document).ready(function() {
+        var node_width = 150;//节点宽度
+        var node_height = 60;//节点高度
+
+        var json = {
+            zyb:[
+                {name:"资源1",uuid:"15556",parent_id:"da556",child_id:"jsdfsdfssdfjs"},
+                {name:"资源2",uuid:"542556",parent_id:"da556",child_id:"sadawfkjskjs"},
+                {name:"资源3",uuid:"87956",parent_id:"sjskjskjskj",child_id:"sqadsjkjskjs"}
+            ],
+            jm:[
+                {name:"节目1",uuid:"15556",parent_id:"da556",child_id:"da556"},
+                {name:"节目2",uuid:"542556",parent_id:"da556",child_id:"31ejsjkjskjs"},
+                {name:"节目3",uuid:"097556",parent_id:"87956",child_id:"41wsjkjskjs"}
+            ],
+            rap:[
+                {name:"日安排1",uuid:"4156",parent_id:"sjskjskjskj",child_id:"skjsjkjskjs"},
+                {name:"日安排2",uuid:"12356",parent_id:"sjskjskjskj",child_id:"skjsjkjskjs"},
+                {name:"日安排3",uuid:"56756",parent_id:"sjskjskjskj",child_id:"skjsjkjskjs"}
+            ],
+            bofangjihua:[
+                {name:"播放计划1",uuid:"55356",parent_id:"sjskjskjskj",child_id:"skjsjkjskjs"},
+                {name:"播放计划2",uuid:"11156",parent_id:"sjskjskjskj",child_id:"skjsjkjskjs"},
+                {name:"播放计划3",uuid:"32156",parent_id:"skjsj6js5kjs",child_id:"skjsjkjskjs"}
+            ],
+            fenping:[
+                {name:"分屏1",uuid:"41556",parent_id:"sjs13skjskj",child_id:"sk31kjskjs"},
+                {name:"分屏2",uuid:"41136",parent_id:"sjs13kj",child_id:"sk313skjs"},
+                {name:"分屏3",uuid:"11116",parent_id:"sjs33skj",child_id:"skjsjaakjs"}
+            ],
+            zdz:[
+                {name:"终端组1",uuid:"33ff6",parent_id:"5FF356",child_id:"skjsaaskjs"},
+                {name:"终端组2",uuid:"223442256",parent_id:"11156",child_id:"skjsj6js5kjs"},
+                {name:"终端组3",uuid:"1333256",parent_id:"32156",child_id:"skjyrkjskjs"}
+            ]
+        };
+        //循环资源包插入到div中
+        for (var i = 0; i < json.zyb.length; i++) {
+            var tag=document.createElement("div");
+            tag.setAttribute("uuid",json.zyb[i].uuid);
+            tag.setAttribute("parent_id",json.zyb[i].parent_id);
+            tag.setAttribute("child_id",json.zyb[i].child_id);
+            tag.innerHTML=json.zyb[i].name;
+            tag.style.border = "1px solid #0064ca";
+            tag.style.boxShadow= "1px 1px 5px #888888";
+            $("#container_0").append(tag);
+        }
+        //循环节目插入到div中
+        for (var i = 0; i < json.jm.length; i++) {
+            var tag=document.createElement("div");
+            tag.setAttribute("uuid",json.jm[i].uuid);
+            tag.setAttribute("parent_id",json.jm[i].parent_id);
+            tag.setAttribute("child_id",json.jm[i].child_id);
+            tag.innerHTML=json.jm[i].name;
+            tag.style.border = "1px solid #b200cc";
+            tag.style.boxShadow= "1px 1px 5px #888888";
+            $("#container_1").append(tag);
+        }
+        //日安排插入到div中
+        for (var i = 0; i < json.rap.length; i++) {
+            var tag=document.createElement("div");
+            tag.setAttribute("uuid",json.rap[i].uuid);
+            tag.setAttribute("parent_id",json.rap[i].parent_id);
+            tag.setAttribute("child_id",json.rap[i].parent_id);
+            tag.innerHTML=json.rap[i].name;
+            tag.style.border = "1px solid #00a900";
+            tag.style.boxShadow= "1px 1px 5px #888888";
+            $("#container_2").append(tag);
+        }
+        //播放计划插入到div中
+        for (var i = 0; i < json.bofangjihua.length; i++) {
+            var tag=document.createElement("div");
+            tag.setAttribute("uuid",json.bofangjihua[i].uuid);
+            tag.setAttribute("parent_id",json.bofangjihua[i].parent_id);
+            tag.setAttribute("child_id",json.bofangjihua[i].parent_id);
+            tag.innerHTML=json.bofangjihua[i].name;
+            tag.style.border = "1px solid #ff6c00";
+            tag.style.boxShadow= "1px 1px 5px #888888";
+            $("#container_3").append(tag);
+        }
+        //分屏插入到div中
+        for (var i = 0; i < json.fenping.length; i++) {
+            var tag=document.createElement("div");
+            tag.setAttribute("uuid",json.fenping[i].uuid);
+            tag.setAttribute("parent_id",json.fenping[i].parent_id);
+            tag.setAttribute("child_id",json.fenping[i].parent_id);
+            tag.innerHTML=json.fenping[i].name;
+            tag.style.border = "1px solid #00909d";
+            tag.style.boxShadow= "1px 1px 5px #888888";
+            $("#container_4").append(tag);
+        }
+        //终端组插入到div中
+        for (var i = 0; i < json.zdz.length; i++) {
+            var tag=document.createElement("div");
+            tag.setAttribute("uuid",json.zdz[i].uuid);
+            tag.setAttribute("parent_id",json.zdz[i].parent_id);
+            tag.setAttribute("child_id",json.zdz[i].parent_id);
+            tag.innerHTML=json.zdz[i].name;
+            tag.style.border = "1px solid #ff0000";
+            tag.style.boxShadow= "1px 1px 5px #888888";
+            $("#container_5").append(tag);
+        }
+
+        link();
+        //连接结点
+        function link() {
+            var c = document.getElementById("myCanvas");
+            var cxt = c.getContext("2d");
+            cxt.lineWidth = 2;
+            var container1=$("#container_0").children();//资源包
+            var container2=$("#container_1").children();//节目
+            var container3=$("#container_2").children();//日安排
+            var container4=$("#container_3").children();//播放计划
+            var container5=$("#container_4").children();//分屏
+            var container6=$("#container_5").children();//终端组
+
+            for (var i = 0; i < container1.length; i++) {//循环资源包
+                for (var j = 0; j < container2.length; j++) {//循环节目
+                    var left1=$(container1[i]).offset().left;
+                    var top1=$(container1[i]).offset().top;
+                    var right1=left1+node_width;
+
+                    var left=$(container2[j]).offset().left;
+                    var top=$(container2[j]).offset().top;
+                    var right=left+node_width;
+                    //判断多对一
+                    if ($(container2[j]).attr('child_id')== $(container1[i]).attr('parent_id')) {
+                        canvasLin()
+                    }
+                    //判断一对多
+                    if ($(container2[j]).attr('parent_id') == $(container1[i]).attr('uuid')) {
+                        canvasLin()
+                    }
+                }
+            }
+            for (var i = 0; i < container2.length; i++) {//循环节目
+                for (var j = 0; j < container3.length; j++) {//循环日安排
+                    var left1=$(container2[i]).offset().left;
+                    var top1=$(container2[i]).offset().top;
+                    var right1=left1+node_width;
+
+                    var left=$(container3[j]).offset().left;
+                    var top=$(container3[j]).offset().top;
+                    var right=left+node_width;
+                    //判断多对一
+                    if ($(container3[j]).attr('child_id')== $(container1[i]).attr('parent_id')) {
+                        canvasLin()
+                    }
+                    //判断一对多
+                    if ($(container3[j]).attr('parent_id') == $(container2[i]).attr('uuid')) {
+                        canvasLin()
+                    }
+                }
+            }
+            for (var i = 0; i < container3.length; i++) {//循环日安排
+                for (var j = 0; j < container4.length; j++) {//循环播放计划
+                    var left1=$(container3[i]).offset().left;
+                    var top1=$(container3[i]).offset().top;
+                    var right1=left1+node_width;
+
+                    var left=$(container4[j]).offset().left;
+                    var top=$(container4[j]).offset().top;
+                    var right=left+node_width;
+                    //判断多对一
+                    if ($(container4[j]).attr('child_id')== $(container3[i]).attr('parent_id')) {
+                        canvasLin()
+                    }
+                    //判断一对多
+                    if ($(container4[j]).attr('parent_id') == $(container3[i]).attr('uuid')) {
+                        canvasLin()
+                    }
+                }
+            }
+            for (var i = 0; i < container4.length; i++) {//循环播放计划
+                for (var j = 0; j < container5.length; j++) {//循环分屏
+                    var left1=$(container4[i]).offset().left;
+                    var top1=$(container4[i]).offset().top;
+                    var right1=left1+node_width;
+
+                    var left=$(container5[j]).offset().left;
+                    var top=$(container5[j]).offset().top;
+                    var right=left+node_width;
+                    //判断多对一
+                    if ($(container5[j]).attr('child_id')== $(container4[i]).attr('parent_id')) {
+                        canvasLin()
+                    }
+                    //判断一对多
+                    if ($(container5[j]).attr('parent_id') == $(container4[i]).attr('uuid')) {
+                        canvasLin()
+                    }
+                }
+            }
+            for (var i = 0; i < container5.length; i++) {//循环分屏
+                for (var j = 0; j < container6.length; j++) {//循环终端组
+                    var left1=$(container5[i]).offset().left;
+                    var top1=$(container5[i]).offset().top;
+                    var right1=left1+node_width;
+
+                    var left=$(container6[j]).offset().left;
+                    var top=$(container6[j]).offset().top;
+                    var right=left+node_width;
+                    //判断多对一
+                    if ($(container6[j]).attr('child_id')== $(container5[i]).attr('parent_id')) {
+                        canvasLin()
+                    }
+                    //判断一对多
+                    if ($(container6[j]).attr('parent_id') == $(container5[i]).attr('uuid')) {
+                        canvasLin()
+                    }
+                }
+            }
+
+            //处理播放计划与终端组的连线问题
+            for (var i = 0; i < container4.length; i++) {//循环播放计划
+                for (var j = 0; j < container6.length; j++) {//循环终端组
+                    var left1=$(container4[i]).offset().left;
+                    var top1=$(container4[i]).offset().top;
+                    var right1=left1+node_width;
+
+                    var left=$(container6[j]).offset().left;
+                    var top=$(container6[j]).offset().top;
+                    var right=left+node_width;
+                    //判断多对一
+                    if ($(container6[j]).attr('child_id')== $(container4[i]).attr('parent_id')) {
+                        cxt.beginPath();
+                        cxt.moveTo(right1,top1 + 15);
+                        cxt.lineTo(right1 + 8+j+8,top1 + 15);
+
+                        cxt.moveTo(right1 + 8+j+8, top1 + 15);
+                        cxt.lineTo(right1 + 8+j+8, top1 + 30);
+
+                        cxt.moveTo(right1 + 8+j+8, top1 + 40);
+                        cxt.lineTo(left - 8+i-8, top + 40);
+
+                        cxt.moveTo(left - 8+i-8, top + 40);
+                        cxt.lineTo(left - 8+i-8, top + 15);
+
+                        cxt.moveTo(left - 8+i-8, top + 15);
+                        cxt.lineTo(left, top + 15);
+                        cxt.closePath();
+                        cxt.strokeStyle = "#888";
+                        cxt.stroke();
+                    }
+                    //判断一对多
+                    if ($(container6[j]).attr('parent_id') == $(container4[i]).attr('uuid')) {
+                        cxt.beginPath();
+                        cxt.moveTo(right1,top1 + 15);
+                        cxt.lineTo(right1 + 8+j+8,top1 + 15);
+
+                        cxt.moveTo(right1 + 8+j+8, top1 + 15);
+                        cxt.lineTo(right1 + 8+j+8, top1 + 40);
+
+                        cxt.moveTo(right1 + 8+j+8, top1 + 40);
+                        cxt.lineTo(left - 8+i-8, top + 40);
+
+                        cxt.moveTo(left - 8+i-8, top + 40);
+                        cxt.lineTo(left - 8+i-8, top + 15);
+
+                        cxt.moveTo(left - 8+i-8, top + 15);
+                        cxt.lineTo(left, top + 15);
+                        cxt.closePath();
+                        cxt.strokeStyle = "#888";
+                        cxt.stroke();
+                    }
+                }
+            }
+            //连线方法分装
+            function canvasLin() {
+                cxt.beginPath();
+                cxt.moveTo(right1,top1 + 15);
+                cxt.lineTo(right1 + 8+j+8,top1 + 15);
+
+                cxt.moveTo(right1 + 8+j+8, top1 + 15);
+                cxt.lineTo(left - 8+i-8, top + 15);
+
+                cxt.moveTo(left - 8+i-8, top + 15);
+                cxt.lineTo(left, top + 15);
+                cxt.closePath();
+                cxt.strokeStyle = "#888";
+                cxt.stroke();
+            }
+        }
+        //点击事件
+        click();
+        function click() {
+            var container1=$("#container_0").children();//资源包
+            var container2=$("#container_1").children();//节目
+            var container3=$("#container_2").children();//日安排
+            var container4=$("#container_3").children();//播放计划
+            var container5=$("#container_4").children();//分屏
+            var container6=$("#container_5").children();//终端组
+
+            for (var i = 0; i < container1.length; i++) {//点击资源包
+                $(container1[i]).click(function () {
+                    $(this).parent().parent().children().children().removeClass();//删除所有的class
+                    $(this).parent().children().removeClass("back_1");
+                    $(this).addClass("back_1");
+                    console.log($(this).attr("uuid"))
+                });
+            }
+            for (var i = 0; i < container2.length; i++) {//点击节目
+                $(container2[i]).click(function () {
+                    $(this).parent().parent().children().children().removeClass();//删除所有的class
+                    $(this).parent().children().removeClass("back_2");
+                    $(this).addClass("back_2");
+                    console.log($(this).attr("uuid"))
+                });
+            }
+            for (var i = 0; i < container3.length; i++) {//点击日安排
+                $(container3[i]).click(function () {
+                    $(this).parent().parent().children().children().removeClass();//删除所有的class;
+                    $(this).parent().children().removeClass("back_3");
+                    $(this).addClass("back_3");
+                    console.log($(this).attr("uuid"))
+                });
+            }
+            for (var i = 0; i < container4.length; i++) {//点击播放计划
+                $(container4[i]).click(function () {
+                    $(this).parent().parent().children().children().removeClass();//删除所有的class
+                    $(this).parent().children().removeClass("back_4");
+                    $(this).addClass("back_4");
+                    console.log($(this).attr("uuid"))
+                });
+            }
+            for (var i = 0; i < container5.length; i++) {//点击分屏
+                $(container5[i]).click(function () {
+                    $(this).parent().parent().children().children().removeClass();//删除所有的class
+                    $(this).parent().children().removeClass("back_5");
+                    $(this).addClass("back_5");
+                    console.log($(this).attr("uuid"))
+                });
+            }
+            for (var i = 0; i < container6.length; i++) {//点击终端
+                $(container6[i]).click(function () {
+                    $(this).parent().parent().children().children().removeClass();//删除所有的class
+                    $(this).parent().children().removeClass("back_6");
+                    $(this).addClass("back_6");
+                    console.log($(this).attr("uuid"))
+                });
+            }
+        }
+    });
+</script>
+</html>

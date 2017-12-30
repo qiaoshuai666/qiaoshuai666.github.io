@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>组织结构图new</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+         .zu_map{width:1010px;height:350px;overflow: auto;}
+        .graph{width:100%;height:50px;overflow: hidden;margin:0px 0px 10px;}
+        .graph p{text-align: center;width:200px;float:left;height:50px;line-height:50px;background-color: #468e33;border-right:1px solid #fff;color: #fff;margin:0px;}
+        .cont div{border:1px solid #E0E0E0;border-radius:5px;width:150px;height:30px;line-height:30px;margin:20px  0;text-align: center;cursor:pointer;box-shadow:1px 1px 5px #888888;}
+        .cont{float:left;width:150px;height:auto;padding:0 25px;}
+        .map{position: relative;}
+        .container_node{position:absolute;left:0;top:0;width:100%;height:100%;}
+        .background_new{position:absolute;left:0;top:0;width:100%;height:100%;}
+        .background_new div{float:left;width:200px;height:auto;}
+        .background{background: #ededed;}
+        #myCanvas{position:absolute;left:0px;top:-60px;}
+        .back{color: #fff;}
+        .div-style{border:1px solid #f00;}
+        .info{width:100%;height:auto;margin-left:10px;margin-top:10px;}
+        .info li{border:0px;}
+        .form-group {margin-bottom: 0px;}
+        .border-right{border-right:1px solid #000;}
+        .page-header{width:150px;background: #ddd;height:35px;margin:0px;text-align:center;}
+        .page-header p{line-height: 30px;font-size:13px;}
+        .list-group{margin-bottom:0px;}
+    </style>
+    <script type="text/javascript" src="jquery.min.js"></script>
+</head>
+<body>
+<div class="zu_map scroll-style">
+    <div class="graph">
+        <p>资源包</p>
+        <p>节目</p>
+        <p>播放计划</p>
+        <p>分屏</p>
+        <p>终端组</p>
+    </div>
+
+    <div class="map">
+        <!--<canvas class="myCanvas" id="myCanvas" width="1000px" height="1000px"></canvas>-->
+        <div class="background_new">
+            <div  class="background"></div>
+            <div  class=""></div>
+            <div  class="background"></div>
+            <div  class=""></div>
+            <div  class="background"></div>
+            <div  class=""></div>
+        </div>
+
+        <div class="container_node">
+            <div id = "container_0" class="cont" style="padding:0 25px;"></div>
+            <div id = "container_1" class="cont" style="padding:0 25px;"></div>
+            <div id = "container_2" class="cont" style="padding:0 25px;"></div>
+            <div id = "container_3" class="cont" style="padding:0 25px;"></div>
+            <div id = "container_4" class="cont" style="padding:0 25px;"></div>
+        </div>
+
+    </div>
+</div>
+</body>
+<script language="javascript">
+    $(document).ready(function() {
+        var node_width = 150;//节点宽度
+        var node_height = 70;//节点高度
+        var note_bgColor = ['#0064ca','#b200cc','#00a900','#ff6c00','#00909d','#ff0000'];
+       // var json = {$json};
+         var json = [
+                 {name:"资源3",uuid:"1",parent_id:"",index:"0"},
+                 {name:"资源3",uuid:"2",parent_id:"",index:"0"},
+                 {name:"资源3",uuid:"3",parent_id:"",index:"0"},
+                 {name:"节目1",uuid:"a",parent_id:"1",index:"1"},
+                 {name:"节目2",uuid:"b",parent_id:"1",index:"1"},
+                 {name:"节目3",uuid:"c",parent_id:"3",index:"1"},
+                 {name:"日安排1",uuid:"11",parent_id:"a,c",index:"2"},
+                 {name:"日安排2",uuid:"22",parent_id:"a,b",index:"2"},
+                 {name:"日安排3",uuid:"33",parent_id:"c,a",index:"2"},
+                 {name:"播放计划1",uuid:"55356",parent_id:"sjskjskjskj",index:"3"},
+                 {name:"播放计划2",uuid:"23156",parent_id:"sjskjskjskj",index:"3"},
+                 {name:"播放计划3",uuid:"32156",parent_id:"sjskjskjskj",index:"3"},
+                 {name:"分屏1",uuid:"41556",parent_id:"sjs13skjskj",index:"4"},
+                 {name:"分屏2",uuid:"41136",parent_id:"sjs13kj",index:"4"},
+                 {name:"分屏3",uuid:"11116",parent_id:"097556",index:"4"},
+                 {name:"终端组1",uuid:"33ff6",parent_id:"5FF356",index:"5"},
+                 {name:"终端组2",uuid:"223442256",parent_id:"23d6",index:"5"},
+                 {name:"终端组3",uuid:"1333256",parent_id:"32156",index:"5"}
+             ];
+        //循环所有插入到div中
+        for (var i = 0; i < json.length; i++) {
+            var re = json[i];
+            var html = '';
+            html+='<div';
+            html+=' style="border:1px solid '+note_bgColor[re.index]+'"';
+            html+=' uuid="'+re.uuid+'"';
+            html+=' parent_id="'+re.parent_id+'"';
+            html+=' select="'+re.select+'"';
+            html+=' type="'+re.type+'"';
+            html+='>'+re.name;
+            html+='</div>';
+            $("#container_"+re.index).append(html);
+        }
+
+        var height_arr = new Array();
+        var containerAll = $(".container_node").children();
+        for(var t = 0; t < containerAll.length; t++){
+            height_arr.push($("#container_"+t).height());
+            console.log($("#container_"+t).height()+'-----')
+        }
+        var canvar_max_height = getMaximin(height_arr,'max') + 50;
+        console.log(canvar_max_height+'+++++');
+        // $('#myCanvas').css({'width':'1000px','height':canvar_max_height+'px'});
+        // 最大值最小值
+        function getMaximin(arr,maximin)
+        {
+            if(maximin=="max")
+            {
+                return Math.max.apply(Math,arr);
+            }
+            else if(maximin=="min")
+            {
+                return Math.min.apply(Math, arr);
+            }
+        }
+        //創建canvas
+        canvas();
+        //连接结点
+        link();
+        //点击事件
+        click();
+        function canvas(){
+            var canvas = document.createElement('canvas');
+            canvas.id = "myCanvas";
+            canvas.class="myCanvas";
+            canvas.width  = 1000;
+            canvas.height = canvar_max_height;
+            $(".background_new").after(canvas);
+        }
+        function link() {
+            var c = document.getElementById("myCanvas");
+            var cxt = c.getContext("2d");cxt.lineWidth = 2;
+            var containerAll = $(".container_node").children();
+            for(var t = 0; t < containerAll.length; t++){
+                var left_num = $("#container_"+t).children();
+                var right_num = $("#container_"+(t+1)).children();
+
+                for (var i = 0; i < left_num.length; i++) { //左边的块
+                    for (var j = 0; j < right_num.length; j++) { //右边的快
+                        //左边的块
+                        var left=$(left_num[i]).offset().left;
+                        var top1=$(left_num[i]).offset().top;
+                        var right1=left+node_width;            //右边的快
+                        var left=$(right_num[j]).offset().left;
+                        var top=$(right_num[j]).offset().top;
+                        var right=left+node_width;            // 线条颜色
+                        lengthColor = note_bgColor[i];            //判断关系
+                        var left_val = $(left_num[i]).attr('uuid');
+                        var right_val = $(right_num[j]).attr('parent_id').split(',');
+                        for (var b = right_val.length - 1; b >= 0; b--) {
+                            if (right_val[b] == left_val) {
+                                canvasLin();
+                            }
+                        }
+                    }
+                }
+            }
+
+            //连线方法分装
+            function canvasLin() {
+                cxt.beginPath();
+                cxt.moveTo(right1,top1 + 15);
+                cxt.lineTo(right1 + 8+j+8,top1 + 15);
+
+                cxt.moveTo(right1 + 8+j+8, top1 + 15);
+                cxt.lineTo(left - 8+i-8, top + 15);
+
+                cxt.moveTo(left - 8+i-8, top + 15);
+                cxt.lineTo(left, top + 15);
+                cxt.closePath();
+                cxt.strokeStyle = lengthColor;
+                cxt.stroke();
+            }
+        }
+
+        function click() {
+            var containerAll = $(".container_node").children();
+            for(var t = 0; t < containerAll.length; t++){
+                var mydiv = $("#container_"+t).children();
+                for (var i = 0; i < mydiv.length; i++) {
+                    if (mydiv.eq(i).attr('select') == 'true') {
+                        mydiv.eq(i).css('background-color',note_bgColor[t]);
+                        mydiv.eq(i).addClass("back");
+                        var one_uuid = mydiv.eq(i).attr('uuid');
+                        var one_type = mydiv.eq(i).attr('type');
+                        ajax_data(one_uuid,one_type);
+                    };
+                    $(mydiv[i]).click(function () {
+                        var my = $(this).parent().index();
+                        $(this).parent().parent().children().children().removeClass();//删除所有的class
+                        $(this).parent().parent().children().children().css('background-color','#fff');//删除所有的class
+                        $(this).parent().children().removeClass("back");
+                        $(this).parent().children().css('background-color','#fff');
+                        $(this).addClass("back");
+                        $(this).css('background-color',note_bgColor[my]);
+                        var uuid = $(this).attr('uuid');
+                        var type = $(this).attr('type');
+                        ajax_data(uuid,type);
+                    });
+                    function ajax_data(uuid,type){
+                        $.post('__GROUP__/Programs/Program/Op/get_program_guanxi_data',{uuid:uuid,type:type},function(re){
+                            if (re.stat*1) {
+                                $('.info').html(re.data);
+                            }else{
+                                parent.layer.msg(re.msg);
+                            };
+                        },'json')
+                    }
+                }
+            }}
+    });
+</script>
+</html>
